@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class 9 Homework Tracker (Saved)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            background-color: #eef2f3;
+            padding-top: 40px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 10px;
+            width: 65%;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background-color: #0056b3; }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+        }
+        li {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 5px solid #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .delete-btn:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📚 Class 9 Homework (Persistent)</h2>
+        <input type="text" id="taskInput" placeholder="Add homework...">
+        <button onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // Load saved tasks automatically when the page opens
+        document.addEventListener("DOMContentLoaded", loadTasks);
+
+        function addTask() {
+            let input = document.getElementById("taskInput");
+            let taskText = input.value.trim();
+
+            if (taskText === "") {
+                alert("Type something first!");
+                return;
+            }
+
+            createTaskElement(taskText);
+            saveTaskToLocal(taskText);
+            input.value = "";
+        }
+
+        // Helper function to create the visual task on screen
+        function createTaskElement(taskText) {
+            let li = document.createElement("li");
+            li.innerText = taskText;
+
+            let deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "❌";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.onclick = function() {
+                li.remove();
+                removeTaskFromLocal(taskText);
+            };
+
+            li.appendChild(deleteBtn);
+            document.getElementById("taskList").appendChild(li);
+        }
+
+        // Save data to the browser memory
+        function saveTaskToLocal(task) {
+            let tasks = localStorage.getItem("homeworkTasks") ? JSON.parse(localStorage.getItem("homeworkTasks")) : [];
+            tasks.push(task);
+            localStorage.setItem("homeworkTasks", JSON.stringify(tasks));
+        }
+
+        // Load data from the browser memory
+        function loadTasks() {
+            let tasks = localStorage.getItem("homeworkTasks") ? JSON.parse(localStorage.getItem("homeworkTasks")) : [];
+            tasks.forEach(task => createTaskElement(task));
+        }
+
+        // Remove data from the browser memory when deleted
+        function removeTaskFromLocal(taskToDelete) {
+            let tasks = JSON.parse(localStorage.getItem("homeworkTasks"));
+            tasks = tasks.filter(task => task !== taskToDelete);
+            localStorage.setItem("homeworkTasks", JSON.stringify(tasks));
+        }
+    </script>
+
+</body>
+</html>
